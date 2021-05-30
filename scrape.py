@@ -54,11 +54,31 @@ def get_soup(url):
         "ProcessorNumber", "StatusCodeText", "BornOnDate", "Lithography", 
         "CertifiedUseConditions", "CoreCount", "ThreadCount", "ClockSpeed", 
         "ClockSpeedMax", "Cache", "Bus")
+
+    spec_data = {
+        "ProductGroup" : "",
+        "CodeNameText" : "", 
+        "MarketSegment" : "",
+        "ProcessorNumber" : "",
+        "StatusCodeText" : "",
+        "BornOnDate" : "",
+        "Lithography" : "", 
+        "CertifiedUseConditions" : "",
+        "CoreCount" : "",
+        "ThreadCount" : "",
+        "ClockSpeed" : "",
+        "ClockSpeedMax" : "",
+        "Cache" : "",
+        "Bus" : ""}
     
-    for data_key in data_keys:
-        h = soup.find_all("span", {"data-key" : data_key})
-        h = h[0].get_text()
-        print("%s\t%s" % (data_key, h.strip()))
+    for key in spec_data.keys():
+        h = soup.find_all("span", {"data-key" : key})
+        h = h[0].get_text().strip()
+        spec_data[key] = h
+
+        print("%s\t%s" % (key, h))
+
+    print(spec_data)
 
 #    print(list(g[0].children))
     
