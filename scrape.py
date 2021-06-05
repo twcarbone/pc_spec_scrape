@@ -15,7 +15,7 @@ def get_soup(url, show_html=False):
     return soup
 
 
-def get_model_links(soup, show=False):
+def get_family_links(soup, show=False):
     """
     PanelLabel122139    Intel Core
     PanelLabel129862    Intel Pentium
@@ -47,7 +47,7 @@ def get_model_links(soup, show=False):
     return links
 
 
-def get_11gen_links(soup, show_links=False):
+def get_model_links(soup, show_links=False):
     """ """
     g = soup.find_all("td", {"data-component" : "arkproductlink"})
 
