@@ -15,6 +15,38 @@ def get_soup(url, show_html=False):
     return soup
 
 
+def get_model_links(soup, show=False):
+    """
+    PanelLabel122139    Intel Core
+    PanelLabel129862    Intel Pentium
+    PanelLabel143521
+    PanelLabel1595
+    PanelLabel175557
+    PanelLabel1433521   Intel Celeron
+    PanelLabel129035
+    PanelLabel179047
+    """
+    g = soup.find_all("div", {"data-parent-panel-key" : "PanelLabel122139"})
+
+    domain = "https://ark.intel.com"
+   
+    links = [] 
+    for item in g:
+        filepaths = item.find_all("a")
+        
+        links = []
+        for item in filepaths:
+            filepath = item.get("href")
+            link = domain + filepath
+
+            links.append(link)
+
+            if show:
+                print(link)
+
+    return links
+
+
 def get_11gen_links(soup, show_links=False):
     """ """
     g = soup.find_all("td", {"data-component" : "arkproductlink"})
