@@ -2,58 +2,44 @@ import requests
 from bs4 import BeautifulSoup as bs
 
 
-def get_soup(url):
+def get_soup(url, show_html=False):
     """
-    Product Collection
-    Code Name
-    Vertical Segment
-    Processor Number
-    Status (Launched, Discontinued)
-    Launch Date
-    Lithography
-    Use Conditions
-    
-    # Cores
-    # Threads
-    Base Frequency
-    Max Turbo Frequency
-    Cache
-    Bus Speed
-    TDP
-
-    ~Skip~
-
-    Max Memory Size
-    Memory Types
-    Max # Memory Channels
-    Max Memory Bandwidth
-    
-    Processor Graphcs
-    Graphcis Base Frequency
-    Graphics Max Frequency
-    Graphics Video Max Memory
-    Execution Units
-    4K Support
-    Hax Resolution (HDMI)
-    Hax Resolution (DP)
-    
-    PCIe Revision Supported
-    PCIe Configurations
-    PCIe Max # Lanes
-    
-    Sockets Supported
-    
-
+    Return a beautiful soup object of the html from `url`.
     """
     page = requests.get(url)
     soup = bs(page.content, "html.parser")
 
-    g = soup.find_all("ul", {"class" : "specs-list"})
+    if show_html:
+        print(soup.prettify())
 
-    data_keys = ("ProductGroup", "CodeNameText", "MarketSegment",
-        "ProcessorNumber", "StatusCodeText", "BornOnDate", "Lithography", 
-        "CertifiedUseConditions", "CoreCount", "ThreadCount", "ClockSpeed", 
-        "ClockSpeedMax", "Cache", "Bus")
+    return soup
+
+
+def get_11gen_links(soup, show_links=False):
+    """ """
+    g = soup.find_all("td", {"data-component" : "arkproductlink"})
+
+    domain = "https://ark.intel.com"
+   
+    links = [] 
+    for item in g:
+        filepath = item.find('a')['href']
+        link = domain + filepath
+        
+        links.append(link)
+
+        if show_links:
+            print(link)
+
+    return links
+        
+
+def get_cpu_data(soup, show_data=False):
+    """
+    Return a dictionary of CPU data from the beautiful soup object `soup`.
+    """
+
+    g = soup.find_all("ul", {"class" : "specs-list"})
 
     spec_data = {
         "ProductGroup" : "",
@@ -73,17 +59,14 @@ def get_soup(url):
     
     for key in spec_data.keys():
         h = soup.find_all("span", {"data-key" : key})
-        h = h[0].get_text().strip()
+        try:
+            h = h[0].get_text().strip()
+        except:
+            h = "__Fail__"
         spec_data[key] = h
 
-        print("%s\t%s" % (key, h))
+        if show_data:
+            print("%23s  %s" % (key, h))
 
-    print(spec_data)
+    return spec_data
 
-#    print(list(g[0].children))
-    
-#    for item in g:
-#        print("--------------")
-#        print(item.prettify())    
-#    
-        
