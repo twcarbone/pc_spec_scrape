@@ -4,7 +4,9 @@
 
 """
 import scrape as scrape
+import time
 
+start_time = time.time()
 
 # get list of URLs for each family of Intel Core procesors
 # e.g.  11th-gen i9, 10th-gen i5, 9th-gen i7
@@ -25,8 +27,12 @@ for i, family_url in enumerate(family_urls):
         model_soup = scrape.get_soup(model_url, False)
         cpu_data = scrape.get_cpu_data(model_soup, False)
 
-        print("Done %d/%d familes. Done %d/%d models." %
-             (i, len(family_urls), j, len(model_urls)))
+        scrape.insert_into_db(cpu_data)
 
+        print("Done %d/%d families. Done %d/%d models." %
+             (i, len(family_urls)-1, j, len(model_urls)-1))
+
+
+print("Finished in %d seconds." % (time.time() - start_time))
 
 

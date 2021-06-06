@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup as bs
+import psycopg2
 
 
 def get_soup(url, show_html=False):
@@ -94,11 +95,41 @@ def get_cpu_data(soup, show_data=False):
         try:
             h = h[0].get_text().strip()
         except:
-            h = "__Fail__"
+            h = "__None__"
         spec_data[key] = h
 
         if show_data:
             print("%23s  %s" % (key, h))
 
     return spec_data
+
+
+def insert_into_db(cpu_data):
+    
+    conn = psycopg2.connect("dbname=pc_hardware user=tcarbone")
+    cur = conn.cursor()
+
+    try:
+        cur.execute("""
+                    INSERT INTO intel_core 
+                    (processor_number, core_count, thread_count, clock_speed, clock_speed_max) 
+                    VALUES (%s, %s, %s, %s, %s);
+                    """,
+                    (cpu_data["ProcessorNumber"],
+                     int(cpu_data["CoreCount"]), 
+                     int(cpu_data["ThreadCount"]),
+                     cpu_data["ClockSpeed"],
+                     cpu_data["ClockSpeedMax"]))
+        conn.commit()
+    
+    except Exception as err:
+        raise err
+        print("Failed to insert into database.")
+
+    finally:
+        cur.close()
+        conn.close()
+
+
+
 
