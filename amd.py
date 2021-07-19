@@ -14,5 +14,6 @@ def get_amd_data():
 
             print("\n")
 
+
 if __name__ == "__main__":
     get_amd_data()    
