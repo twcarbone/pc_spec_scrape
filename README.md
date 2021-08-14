@@ -4,3 +4,4 @@ This project attempts to scrape Intel and AMD CPU specifications from the manufa
 ### Resources
  * [Intel](https://ark.intel.com/content/www/us/en/ark.html#@PanelLabel122139)
  * [AMD](https://www.amd.com/en/products/specifications/processors)
+ * Use `python3 -m json.tool <foo.json>` for viewing JSON in command line
