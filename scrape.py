@@ -1,6 +1,5 @@
 import requests
 from bs4 import BeautifulSoup as bs
-import psycopg2
 
 
 def get_soup(url, show_html=False):
@@ -129,7 +128,6 @@ def insert_into_db(cpu_data):
     finally:
         cur.close()
         conn.close()
-
 
 
 

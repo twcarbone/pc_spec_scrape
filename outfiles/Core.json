@@ -1,0 +1,18 @@
+{
+    "Intel Core X-series Processors i7-7740X": {
+        "ProductGroup": "Intel Core X-series Processors",
+        "CodeNameText": "Products formerly Kaby Lake",
+        "MarketSegment": "Desktop",
+        "ProcessorNumber": "i7-7740X",
+        "StatusCodeText": "Discontinued",
+        "BornOnDate": "Q2'17",
+        "Lithography": "14 nm",
+        "CertifiedUseConditions": "__None__",
+        "CoreCount": "4",
+        "ThreadCount": "8",
+        "ClockSpeed": "4.30 GHz",
+        "ClockSpeedMax": "4.50 GHz",
+        "Cache": "8 MB",
+        "Bus": "8 GT/s"
+    }
+}
