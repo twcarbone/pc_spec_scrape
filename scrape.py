@@ -93,12 +93,15 @@ def get_cpu_data(url, show_data=False):
             h = h[0].get_text().strip()
         except:
             h = "__None__"
-        specs[key] = h
+
+        specs[key] = h.replace(u"\u2122", '').replace(u"\u00AE", '')
+
+    name = specs["ProductGroup"] + " " + specs["ProcessorNumber"]
 
     if show_data:
-        print("%s %s" % (specs["ProductGroup"], specs["ProcessorNumber"]))
+        print(name)
 
-    return specs
+    return (specs, name)
 
 
 def insert_into_db(cpu_data):

@@ -1,5 +1,7 @@
-import scrape as scrape
 import time
+import json
+
+import scrape as scrape
 
 start_time = time.time()
 
@@ -22,9 +24,9 @@ product_lines = {
 # 11th Generation Core i9, 7th Generation Core i7, 10th Generation Core i3).
 # Here, we get a list of all URLs, each one corresponding to a family of
 # processors.
-family_urls = scrape.get_family_links(ROOT_URL, product_lines['Core'], True)
+family_urls = scrape.get_family_links(ROOT_URL, product_lines['Core'])
 
-
+cpu_specs = {}
 for i, family_url in enumerate(family_urls):
 
     # Here, we get a list of all of the URLs for each CPU model within each
@@ -35,13 +37,19 @@ for i, family_url in enumerate(family_urls):
 
     for j, model_url in enumerate(model_urls):
 
-        # get cpu data from each model of Intel processor
-        cpu_data = scrape.get_cpu_data(model_url, True)
+        # Return a name and dictionary to each CPU
+        (cpu_data, name) = scrape.get_cpu_data(model_url, True)
 
-#        scrape.insert_into_db(cpu_data)
+        cpu_specs[name] = cpu_data
 
+#       scrape.insert_into_db(cpu_data)
 #       print("Done %d/%d families. Done %d/%d models." %
 #             (i, len(family_urls)-1, j, len(model_urls)-1))
 
+    break
+
+# Print the output of the script to a JSON file
+with open("./outfiles/Intel.json", "w") as outfile:
+    json.dump(cpu_specs, outfile)
 
 print("Finished in %d seconds." % (time.time() - start_time))
