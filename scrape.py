@@ -16,18 +16,15 @@ def get_soup(url, show_html=False):
     return soup
 
 
-def get_family_links(soup, show=False):
+def get_family_links(url, panel_label, show=False):
     """
-    PanelLabel122139    Intel Core
-    PanelLabel129862    Intel Pentium
-    PanelLabel143521
-    PanelLabel1595
-    PanelLabel175557
-    PanelLabel1433521   Intel Celeron
-    PanelLabel129035
-    PanelLabel179047
+    This function expects a soup object of the root URL of Intel processors, as
+    well as a PanelLabel tag. The Panellabels correspond to each product line
+    of Intel processors. The function returns a list of URLs for each model CPU
+    in the given product line.
     """
-    g = soup.find_all("div", {"data-parent-panel-key" : "PanelLabel122139"})
+    soup = get_soup(url)
+    g = soup.find_all("div", {"data-parent-panel-key" : panel_label})
 
     domain = "https://ark.intel.com"
    
@@ -39,7 +36,6 @@ def get_family_links(soup, show=False):
         for item in filepaths:
             filepath = item.get("href")
             link = domain + filepath
-
             links.append(link)
 
             if show:
@@ -48,8 +44,9 @@ def get_family_links(soup, show=False):
     return links
 
 
-def get_model_links(soup, show_links=False):
+def get_model_links(url, show_links=False):
     """ """
+    soup = get_soup(url)
     g = soup.find_all("td", {"data-component" : "arkproductlink"})
 
     domain = "https://ark.intel.com"
@@ -67,14 +64,14 @@ def get_model_links(soup, show_links=False):
     return links
         
 
-def get_cpu_data(soup, show_data=False):
+def get_cpu_data(url, show_data=False):
     """
     Return a dictionary of CPU data from the beautiful soup object `soup`.
     """
-
+    soup = get_soup(url)
     g = soup.find_all("ul", {"class" : "specs-list"})
 
-    spec_data = {
+    specs = {
         "ProductGroup" : "",
         "CodeNameText" : "", 
         "MarketSegment" : "",
@@ -90,18 +87,18 @@ def get_cpu_data(soup, show_data=False):
         "Cache" : "",
         "Bus" : ""}
     
-    for key in spec_data.keys():
+    for key in specs.keys():
         h = soup.find_all("span", {"data-key" : key})
         try:
             h = h[0].get_text().strip()
         except:
             h = "__None__"
-        spec_data[key] = h
+        specs[key] = h
 
-        if show_data:
-            print("%23s  %s" % (key, h))
+    if show_data:
+        print("%s %s" % (specs["ProductGroup"], specs["ProcessorNumber"]))
 
-    return spec_data
+    return specs
 
 
 def insert_into_db(cpu_data):

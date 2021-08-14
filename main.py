@@ -1,38 +1,47 @@
-"""
-
-
-
-"""
 import scrape as scrape
 import time
 
 start_time = time.time()
 
-# get list of URLs for each family of Intel Core procesors
-# e.g.  11th-gen i9, 10th-gen i5, 9th-gen i7
-root_url = "https://ark.intel.com/content/www/us/en/ark.html#@PanelLabel122139"
-root_soup = scrape.get_soup(root_url, False)
-family_urls = scrape.get_family_links(root_soup, False)
+ROOT_URL = "https://ark.intel.com/content/www/us/en/ark.html"
+
+# The root URL of the intel processor specification page includes clickable
+# 'panels' to each major product line (e.g., 'Core', 'Xeon', 'Celeron', etc.)
+product_lines = {
+    'Core' : 'PanelLabel122139',
+    'Celeron' : 'PanelLabel43521',
+    'XeonPhi' : 'PanelLabel75557',
+    'Atom' : 'PanelLabel29035',
+    'Pentium' : 'PanelLabel29826',
+    'Xeon' : 'PanelLabel595',
+    'Itanium' : 'PanelLabel451',
+    'Quark' : 'PanelLabel79047'
+    }
+
+# Each product line (e.g., 'Core') contains multiple families of CPU (e.g.,
+# 11th Generation Core i9, 7th Generation Core i7, 10th Generation Core i3).
+# Here, we get a list of all URLs, each one corresponding to a family of
+# processors.
+family_urls = scrape.get_family_links(ROOT_URL, product_lines['Core'], True)
+
 
 for i, family_url in enumerate(family_urls):
 
-    # get list of URLs for each model of Intel processor in the family
-    # e.g. i9-11900, i9-11900K, i9-11980HK
-    family_soup = scrape.get_soup(family_url, False)
-    model_urls = scrape.get_model_links(family_soup, False)
+    # Here, we get a list of all of the URLs for each CPU model within each
+    # product family. For example, within the product family '9th Generation
+    # Core i7' there are models 'Core i7-9700K', 'Core i7-9750H', 'Core
+    # i7-9850HE', etc. 
+    model_urls = scrape.get_model_links(family_url)
 
     for j, model_url in enumerate(model_urls):
 
         # get cpu data from each model of Intel processor
-        model_soup = scrape.get_soup(model_url, False)
-        cpu_data = scrape.get_cpu_data(model_soup, False)
+        cpu_data = scrape.get_cpu_data(model_url, True)
 
-        scrape.insert_into_db(cpu_data)
+#        scrape.insert_into_db(cpu_data)
 
-        print("Done %d/%d families. Done %d/%d models." %
-             (i, len(family_urls)-1, j, len(model_urls)-1))
+#       print("Done %d/%d families. Done %d/%d models." %
+#             (i, len(family_urls)-1, j, len(model_urls)-1))
 
 
 print("Finished in %d seconds." % (time.time() - start_time))
-
-
